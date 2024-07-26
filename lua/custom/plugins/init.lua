@@ -1,7 +1,7 @@
 -- my own modules
 
 -- create command TODO
-vim.api.nvim_create_user_command('Todo', 'normal! iTODO: ;deadline: ; planned: ; tags: ; files; <Esc>', {})
+vim.api.nvim_create_user_command('Todo', 'normal! iTODO: | @d | @p | @t | @f | <Esc>0f:', {})
 --
 
 -- Function to insert today's date in YYYY-MM-DD format
@@ -15,9 +15,6 @@ vim.api.nvim_create_user_command('Today', insert_today_date, {})
 --
 -- Function to replace "TODO" with "DONE" and move the line to the end of the document
 local function replace_todo_with_done_and_move()
-  -- Get the current line number
-  local line_num = vim.api.nvim_win_get_cursor(0)[1]
-
   -- Get the current line content
   local line = vim.api.nvim_get_current_line()
 
@@ -36,5 +33,14 @@ end
 
 -- Create the :Done command
 vim.api.nvim_create_user_command('Done', replace_todo_with_done_and_move, {})
+
+-- Hightlight TODO in markdown files
+vim.cmd [[
+  augroup MarkdownHighlight
+    autocmd!
+    autocmd FileType markdown syntax match TodoKeyword /\CTODO/
+    autocmd FileType markdown highlight link TodoKeyword TodoBgNOTE
+  augroup END
+]]
 
 return {}
